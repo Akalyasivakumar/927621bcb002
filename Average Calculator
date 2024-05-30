@@ -1,0 +1,48 @@
+import React, { useState, useEffect } from 'react';
+
+function AvgCalci() {
+  const [numbers, setNumbers] = useState([]);
+  const [average, setAverage] = useState(null);
+  const [windowSize, setWindowSize] = useState(10);
+
+  const fetchNumbers = async () => {
+    const response = await fetch('https://api.example.com/numbers');
+    const data = await response.json();
+    setNumbers(data.numbers);
+  };
+
+  const calculateAverage = async () => {
+    const windowNumbers = numbers.slice(-windowSize);
+    const sum = windowNumbers.reduce((acc, num) => acc + num, 0);
+    setAverage(sum / windowSize);
+  };
+
+  useEffect(() => {
+    fetchNumbers();
+  }, []);
+
+  useEffect(() => {
+    calculateAverage();
+  }, [numbers, windowSize]);
+
+  return (
+    <div>
+      <input
+        type="number"
+        value={windowSize}
+        onChange={(e) => setWindowSize(parseInt(e.target.value))}
+      />
+      <button onClick={fetchNumbers}>Fetch Numbers</button>
+      <ul>
+        {numbers.map((number) => (
+          <li key={number}>{number}</li>
+        ))}
+      </ul>
+      <p>Avg: {avg}</p>
+    </div>
+  );
+}
+
+export default AvgCalci;
+
+
